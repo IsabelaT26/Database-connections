@@ -9,6 +9,9 @@ public class DatabaseConnectionTest {
     public static void main(String[] args) throws SQLException {
         GuestbookDatabase guestbookDatabase = new GuestbookDatabase();
         GuestbookEntry entry = new GuestbookEntry("Isabela", "isat@gmail.com", "www.IsabelaBela.com", "nice");
+        GuestbookEntry entry1 = new GuestbookEntry("Daniel", "DanielL@gmail.com", "www.DanielLeigh.com", "professional" );
         guestbookDatabase.saveEntry(entry);
+        guestbookDatabase.saveEntry(entry1);
+        guestbookDatabase.showEntries();
     }
 }

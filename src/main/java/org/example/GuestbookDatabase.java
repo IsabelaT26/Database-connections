@@ -1,9 +1,6 @@
 package org.example;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
 public class GuestbookDatabase {
     private String url = "jdbc:mysql://localhost:3306/guestbook";
@@ -28,5 +25,21 @@ public class GuestbookDatabase {
             statement.executeUpdate();
         }
 
+    }
+
+    public void showEntries() throws  SQLException{
+        String query = "SELECT * FROM entries";
+        try(Connection connection = getConnection()) {
+            PreparedStatement statement = connection.prepareStatement(query);
+            ResultSet rows = statement.executeQuery();
+            System.out.printf("Name | Email | Website | Comment");
+            while (rows.next()){
+                System.out.printf("%s | %s | %s | %s%n",
+                        rows.getString("name"),
+                        rows.getString("email"),
+                        rows.getString("website"),
+                        rows.getString("comment"));
+            }
+        }
     }
 }
