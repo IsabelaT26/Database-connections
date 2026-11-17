@@ -2,10 +2,13 @@ package org.example;
 
 import javax.swing.*;
 import java.awt.*;
+import java.sql.SQLException;
 
 public class GuestbookGUI {
 
     public static void main(String[] args){
+
+        GuestbookDatabase guestbookDatabase = new GuestbookDatabase();
 
         JFrame frame = new JFrame("GuestBook");
         JPanel panel = new JPanel(new BorderLayout(0, 12));
@@ -25,6 +28,15 @@ public class GuestbookGUI {
 
         JButton enterButton = new JButton();
         JButton showButton = new JButton();
+
+        enterButton.addActionListener(event -> {
+            try {
+                guestbookDatabase.saveEntry(new GuestbookEntry(nameField.getText(), emailField.getText(), websiteField.getText(), commentField.getText()));
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame, "Could not save the entry.");
+                e.printStackTrace();
+            }
+        });
 
         fieldsPanel.add(name);
         fieldsPanel.add(nameField);
@@ -47,6 +59,8 @@ public class GuestbookGUI {
         buttonPanel.add(showButton);
         buttonPanel.add(enterButton);
         panel.add(buttonPanel, BorderLayout.SOUTH);
+
+
 
         frame.setSize(600,400);
 
