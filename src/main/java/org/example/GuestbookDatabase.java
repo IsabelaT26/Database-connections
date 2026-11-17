@@ -1,6 +1,9 @@
 package org.example;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Pattern;
 
 public class GuestbookDatabase {
     private String url = "jdbc:mysql://localhost:3306/guestbook";
@@ -18,28 +21,57 @@ public class GuestbookDatabase {
                 "VALUES (?,?,?,?);";
         try (Connection connection = getConnection();
              PreparedStatement statement = connection.prepareStatement(query);){
-            statement.setString(1, entry.getName());
-            statement.setString(2, entry.getEmail());
-            statement.setString(3, entry.getWebsite());
-            statement.setString(4, entry.getComment());
+            statement.setString(1, removeHTML(entry.getName()));
+            statement.setString(2, removeHTML(entry.getEmail()));
+            statement.setString(3, removeHTML(entry.getWebsite()));
+            statement.setString(4, removeHTML(entry.getComment()));
             statement.executeUpdate();
         }
 
     }
 
-    public void showEntries() throws  SQLException{
-        String query = "SELECT * FROM entries";
-        try(Connection connection = getConnection()) {
-            PreparedStatement statement = connection.prepareStatement(query);
-            ResultSet rows = statement.executeQuery();
-            System.out.printf("Name | Email | Website | Comment");
-            while (rows.next()){
-                System.out.printf("%s | %s | %s | %s%n",
+    public List<GuestbookEntry> getEntries() throws SQLException {
+        String query = "SELECT name, email, website, comment FROM entries";
+        List<GuestbookEntry> entries = new ArrayList<>();
+
+        try (Connection connection = getConnection();
+             PreparedStatement statement = connection.prepareStatement(query);
+             ResultSet rows = statement.executeQuery()) {
+
+            while (rows.next()) {
+                GuestbookEntry entry = new GuestbookEntry(
                         rows.getString("name"),
                         rows.getString("email"),
                         rows.getString("website"),
-                        rows.getString("comment"));
+                        rows.getString("comment")
+                );
+                entries.add(entry);
             }
         }
+
+        return entries;
+    }
+
+    public void showEntries() throws SQLException {
+        List<GuestbookEntry> entries = getEntries();
+
+        String format = "%-10s | %-20s | %-30s | %-10s%n";
+        System.out.printf(format, "Name", "Email", "Website", "Comment");
+
+        for (GuestbookEntry entry : entries) {
+            System.out.printf(format,
+                    entry.getName(),
+                    entry.getEmail(),
+                    entry.getWebsite(),
+                    entry.getComment());
+        }
+    }
+
+    private String removeHTML(String text){
+        Pattern htmlTag = Pattern.compile("</?[a-zA-Z][^>]*>");
+        if(htmlTag.matcher(text).find()){
+            return "censur";
+        }
+        return text;
     }
 }

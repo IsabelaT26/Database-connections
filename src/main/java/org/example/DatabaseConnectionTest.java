@@ -10,8 +10,10 @@ public class DatabaseConnectionTest {
         GuestbookDatabase guestbookDatabase = new GuestbookDatabase();
         GuestbookEntry entry = new GuestbookEntry("Isabela", "isat@gmail.com", "www.IsabelaBela.com", "nice");
         GuestbookEntry entry1 = new GuestbookEntry("Daniel", "DanielL@gmail.com", "www.DanielLeigh.com", "professional" );
-        guestbookDatabase.saveEntry(entry);
-        guestbookDatabase.saveEntry(entry1);
+        GuestbookEntry entry2 = new GuestbookEntry("Bela", "isat@gmail.com", "www.IsabelaBela.com", "Hello <b>world</b>");
+        guestbookDatabase.saveEntry(entry2);
+        //guestbookDatabase.saveEntry(entry);
+        //guestbookDatabase.saveEntry(entry1);
         guestbookDatabase.showEntries();
     }
 }
