@@ -68,7 +68,7 @@ public class GuestbookDatabase {
     }
 
     private String removeHTML(String text){
-        Pattern htmlTag = Pattern.compile("</?[a-zA-Z][^>]*>");
+        Pattern htmlTag = Pattern.compile("<[a-zA-Z/!]");
         if(htmlTag.matcher(text).find()){
             return "censur";
         }
