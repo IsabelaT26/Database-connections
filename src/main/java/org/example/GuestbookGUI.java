@@ -16,6 +16,19 @@ public class GuestbookGUI {
 
         JPanel fieldsPanel = new JPanel(new GridLayout(3, 2, 8, 8));
 
+        JTextArea entriesArea = new JTextArea(10, 40);
+        entriesArea.setEditable(false);
+        entriesArea.setLineWrap(true);
+        entriesArea.setWrapStyleWord(true);
+
+        JScrollPane scrollPane = new JScrollPane(entriesArea);
+
+        JFrame entriesFrame = new JFrame("Guestbook entries");
+        entriesFrame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        entriesFrame.add(scrollPane);
+        entriesFrame.setSize(600, 400);
+        entriesFrame.setLocationRelativeTo(frame);
+
         JLabel name = new JLabel("Name");
         JLabel email = new JLabel("Email");
         JLabel website = new JLabel("Website");
@@ -37,6 +50,27 @@ public class GuestbookGUI {
                 e.printStackTrace();
             }
         });
+
+        showButton.addActionListener(event -> {
+            try {
+                var entries = guestbookDatabase.getEntries();
+                entriesArea.setText("");
+
+                for (GuestbookEntry entry : entries) {
+                    entriesArea.append("Name: " + entry.getName() + "\n");
+                    entriesArea.append("Email: " + entry.getEmail() + "\n");
+                    entriesArea.append("Website: " + entry.getWebsite() + "\n");
+                    entriesArea.append("Comment: " + entry.getComment() + "\n\n");
+                }
+
+                entriesArea.setCaretPosition(0);
+                entriesFrame.setVisible(true);
+            } catch (SQLException e) {
+                JOptionPane.showMessageDialog(frame, "Could not load the entries.");
+                e.printStackTrace();
+            }
+        });
+
 
         fieldsPanel.add(name);
         fieldsPanel.add(nameField);
